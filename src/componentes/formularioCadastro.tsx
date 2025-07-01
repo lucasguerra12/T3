@@ -13,7 +13,6 @@ type Props = {
     setServicos: (servicos: Servico[]) => void,
 }
 
-// -- NOVO: Componentes de Modal extraídos para estabilidade --
 
 function CadastroClienteModal({ onClose, clientes, setClientes }: { onClose: () => void, clientes: Cliente[], setClientes: (clientes: Cliente[]) => void }) {
     const [nome, setNome] = useState('');
@@ -151,7 +150,7 @@ function CadastroServicoModal({ onClose, servicos, setServicos }: { onClose: () 
 
 
 const FormularioCadastro: React.FC<Props> = ({ tema, clientes, produtos, servicos, setClientes, setProdutos, setServicos }) => {
-    // NOVO: Estado para controlar qual modal de cadastro está visível
+    
     const [modalVisivel, setModalVisivel] = useState<'nenhum' | 'cliente' | 'produto' | 'servico'>('nenhum');
 
     const fecharModal = () => {
@@ -160,12 +159,8 @@ const FormularioCadastro: React.FC<Props> = ({ tema, clientes, produtos, servico
     
     return (
         <>
-            <h5 className="text-center text-lg md:text-2xl lg:text-3xl font-semibold p-4 md:p-6 pt-8 md:pt-12 bg-gradient-to-r from-cyan-500 to-blue-500 text-white">
-                Bem-vindo ao cadastro do <span className="ml-2 font-bold italic">Grupo World Beauty</span>
-            </h5>
             <div className="w-full flex justify-center bg-sky-100 min-h-screen p-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full max-w-6xl">
-                    {/* MUDANÇA: Botões agora apenas definem o estado do modal */}
                     <button className="flex flex-col justify-center items-center px-4 py-2 rounded-lg h-52 w-full text-white font-semibold hover:bg-blue-700 transition bg-blue-500 shadow-md" onClick={() => setModalVisivel('cliente')}>
                         <UserCircleIcon className="h-16 w-16 mb-4" />
                         Cadastro Cliente
@@ -180,7 +175,6 @@ const FormularioCadastro: React.FC<Props> = ({ tema, clientes, produtos, servico
                     </button>
                 </div>
             </div>
-            {/* NOVO: Renderização condicional do conteúdo do modal */}
             <Modal isOpen={modalVisivel !== 'nenhum'} onClose={fecharModal}>
                 {modalVisivel === 'cliente' && <CadastroClienteModal onClose={fecharModal} clientes={clientes} setClientes={setClientes} />}
                 {modalVisivel === 'produto' && <CadastroProdutoModal onClose={fecharModal} produtos={produtos} setProdutos={setProdutos} />}

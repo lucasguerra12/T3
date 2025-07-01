@@ -23,7 +23,7 @@ const BarraNavegacao: React.FC<Props> = ({ tema, botoes, seletorView }) => {
     };
 
     return (
-        <nav className="bg-blue-600 text-white p-4 shadow-lg">
+        <nav className="bg-black-60 text-white p-4 shadow-lg">
             <div className="flex flex-wrap justify-between items-center w-full mx-auto">
                 <span className="font-extrabold text-lg sm:text-xl mb-2 sm:mb-0">WB</span>
                 <ul className="flex flex-wrap gap-2 sm:gap-4 overflow-x-auto">

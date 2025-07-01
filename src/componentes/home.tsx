@@ -9,9 +9,6 @@ type Props = {
 
 const PaginaPrincipal: React.FC<Props> = ({ tema, seletorView }) => (
     <>
-        <h5 className="text-center text-lg md:text-2xl lg:text-3xl font-semibold p-4 md:p-6 pt-8 md:pt-12 bg-gradient-to-r from-cyan-500 to-blue-500 text-white">
-            Bem-vindo ao sistema do <span className="ml-2 font-bold italic">Grupo World Beauty</span>
-        </h5>
         <div className="flex justify-center bg-sky-100 p-4 min-h-screen">
             <div className="flex flex-col items-center gap-5 w-full py-4">
                 <button
