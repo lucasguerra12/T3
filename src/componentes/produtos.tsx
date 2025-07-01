@@ -13,7 +13,6 @@ type Props = {
 const Produtos: React.FC<Props> = ({ tema, produtos, setProdutos, seletorView }) => {
     const [modalVisivel, setModalVisivel] = useState<'nenhum' | 'atualizar' | 'excluir' | 'listar'>('nenhum');
     
-    // MUDANÇA: Estados para armazenar o NOME do produto para as operações
     const [nomeAtualizacao, setNomeAtualizacao] = useState('');
     const [novoValor, setNovoValor] = useState('');
     const [nomeExclusao, setNomeExclusao] = useState('');
@@ -26,7 +25,7 @@ const Produtos: React.FC<Props> = ({ tema, produtos, setProdutos, seletorView })
     };
 
     const handleAtualizarProduto = () => {
-        // MUDANÇA: Lógica de busca agora usa o NOME
+
         const produtoExiste = produtos.find(p => p.nome.toLowerCase() === nomeAtualizacao.toLowerCase());
         if (!produtoExiste) {
             alert('Produto com o nome informado não encontrado.');
@@ -45,7 +44,6 @@ const Produtos: React.FC<Props> = ({ tema, produtos, setProdutos, seletorView })
     };
     
     const handleExcluirProduto = () => {
-        // MUDANÇA: Lógica de busca agora usa o NOME
         const produtoExiste = produtos.find(p => p.nome.toLowerCase() === nomeExclusao.toLowerCase());
         if (!produtoExiste) {
             alert('Produto com o nome informado não encontrado.');
@@ -101,7 +99,7 @@ const Produtos: React.FC<Props> = ({ tema, produtos, setProdutos, seletorView })
                         <div className="flex flex-col gap-4 w-full max-w-md">
                             <h2 className="text-xl font-bold">Atualizar Produto</h2>
 
-                            {/* MUDANÇA: Campo de texto para buscar pelo NOME */}
+                            
                             <label className={labelStyle} htmlFor="produto_nome_att">Nome do Produto</label>
                             <input id="produto_nome_att" className={inputStyle} type="text" placeholder="Digite o nome do produto" value={nomeAtualizacao} onChange={e => setNomeAtualizacao(e.target.value)} />
                             
@@ -117,7 +115,7 @@ const Produtos: React.FC<Props> = ({ tema, produtos, setProdutos, seletorView })
                         <div className="flex flex-col gap-4">
                             <h2 className="text-xl font-bold">Excluir Produto</h2>
                             
-                            {/* MUDANÇA: Campo de texto para buscar pelo NOME */}
+                        
                             <label className={labelStyle} htmlFor="produto_nome_del">Nome do Produto</label>
                             <input id="produto_nome_del" className={inputStyle} type="text" placeholder="Digite o nome do produto a excluir" value={nomeExclusao} onChange={e => setNomeExclusao(e.target.value)} />
                             

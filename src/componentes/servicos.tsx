@@ -13,7 +13,6 @@ type Props = {
 const Servicos: React.FC<Props> = ({ tema, servicos, setServicos, seletorView }) => {
     const [modalVisivel, setModalVisivel] = useState<'nenhum' | 'atualizar' | 'excluir' | 'listar'>('nenhum');
 
-    // MUDANÇA: Estados para armazenar o NOME do serviço para as operações
     const [nomeAtualizacao, setNomeAtualizacao] = useState('');
     const [novoValor, setNovoValor] = useState('');
     const [nomeExclusao, setNomeExclusao] = useState('');
@@ -26,7 +25,6 @@ const Servicos: React.FC<Props> = ({ tema, servicos, setServicos, seletorView })
     };
 
     const handleAtualizarServico = () => {
-        // MUDANÇA: Lógica de busca agora usa o NOME
         const servicoExiste = servicos.find(s => s.nome.toLowerCase() === nomeAtualizacao.toLowerCase());
         if (!servicoExiste) {
             alert('Serviço com o nome informado não encontrado.');
@@ -45,7 +43,6 @@ const Servicos: React.FC<Props> = ({ tema, servicos, setServicos, seletorView })
     };
     
     const handleExcluirServico = () => {
-        // MUDANÇA: Lógica de busca agora usa o NOME
         const servicoExiste = servicos.find(s => s.nome.toLowerCase() === nomeExclusao.toLowerCase());
         if (!servicoExiste) {
             alert('Serviço com o nome informado não encontrado.');
@@ -101,7 +98,7 @@ const Servicos: React.FC<Props> = ({ tema, servicos, setServicos, seletorView })
                         <div className="flex flex-col gap-4 w-full max-w-md">
                             <h2 className="text-xl font-bold">Atualizar Serviço</h2>
 
-                            {/* MUDANÇA: Campo de texto para buscar pelo NOME */}
+                            
                             <label className={labelStyle} htmlFor="servico_nome_att">Nome do Serviço</label>
                             <input id="servico_nome_att" className={inputStyle} type="text" placeholder="Digite o nome do serviço" value={nomeAtualizacao} onChange={e => setNomeAtualizacao(e.target.value)} />
                             
@@ -117,7 +114,7 @@ const Servicos: React.FC<Props> = ({ tema, servicos, setServicos, seletorView })
                         <div className="flex flex-col gap-4">
                             <h2 className="text-xl font-bold">Excluir Serviço</h2>
 
-                            {/* MUDANÇA: Campo de texto para buscar pelo NOME */}
+                        
                             <label className={labelStyle} htmlFor="servico_nome_del">Nome do Serviço</label>
                             <input id="servico_nome_del" className={inputStyle} type="text" placeholder="Digite o nome do serviço a excluir" value={nomeExclusao} onChange={e => setNomeExclusao(e.target.value)} />
                             

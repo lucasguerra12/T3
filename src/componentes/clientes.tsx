@@ -11,18 +11,11 @@ type Props = {
 }
 
 const Clientes: React.FC<Props> = ({ tema, clientes, setClientes, seletorView }) => {
-    // Estado para controlar qual modal está visível ('nenhum', 'atualizar', etc.)
     const [modalVisivel, setModalVisivel] = useState<'nenhum' | 'atualizar' | 'excluir' | 'listar'>('nenhum');
-    
-    // Estados para os campos do formulário de atualização
     const [nomeAtualizacao, setNomeAtualizacao] = useState('');
     const [novoEmail, setNovoEmail] = useState('');
-    const [novoTelefone, setNovoTelefone] = useState('');
-    
-    // Estado para o campo do formulário de exclusão
+    const [novoTelefone, setNovoTelefone] = useState(''); 
     const [nomeExclusao, setNomeExclusao] = useState('');
-
-    // Função para fechar qualquer modal e limpar os estados dos formulários
     const fecharModal = () => {
         setModalVisivel('nenhum');
         setNomeAtualizacao('');
@@ -30,20 +23,16 @@ const Clientes: React.FC<Props> = ({ tema, clientes, setClientes, seletorView })
         setNovoTelefone('');
         setNomeExclusao('');
     };
-
-    // Função para lidar com a atualização de um cliente
-    const handleAtualizarCliente = () => {
-        // Busca o cliente pelo nome (ignorando maiúsculas/minúsculas)
+    
+    const handleAtualizarCliente = () => {    
         const clienteExiste = clientes.find(c => c.nome.toLowerCase() === nomeAtualizacao.toLowerCase());
         if (!clienteExiste) {
             alert('Cliente com o nome informado não encontrado.');
             return;
         }
 
-        // Cria uma nova lista com os dados do cliente atualizados
         const clientesAtualizados = clientes.map(c => {
-            if (c.nome.toLowerCase() === nomeAtualizacao.toLowerCase()) {
-                // Mantém os dados antigos se os novos campos estiverem vazios
+            if (c.nome.toLowerCase() === nomeAtualizacao.toLowerCase()) {     
                 return { 
                     ...c, 
                     email: novoEmail || c.email,
@@ -57,23 +46,18 @@ const Clientes: React.FC<Props> = ({ tema, clientes, setClientes, seletorView })
         fecharModal();
     };
     
-    // Função para lidar com a exclusão de um cliente
-    const handleExcluirCliente = () => {
-        // Busca o cliente pelo nome (ignorando maiúsculas/minúsculas)
+    const handleExcluirCliente = () => {     
         const clienteExiste = clientes.find(c => c.nome.toLowerCase() === nomeExclusao.toLowerCase());
         if (!clienteExiste) {
             alert('Cliente com o nome informado não encontrado.');
             return;
         }
-
-        // Cria uma nova lista sem o cliente excluído
         const clientesFiltrados = clientes.filter(c => c.nome.toLowerCase() !== nomeExclusao.toLowerCase());
         setClientes(clientesFiltrados);
         alert('Cliente excluído com sucesso!');
         fecharModal();
     };
     
-    // Estilos reutilizáveis para os formulários
     const inputStyle = "appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-blue-500";
     const labelStyle = "block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2";
 
@@ -116,8 +100,7 @@ const Clientes: React.FC<Props> = ({ tema, clientes, setClientes, seletorView })
                 </div>
 
                 {/* O Modal único que renderiza o conteúdo certo com base no estado 'modalVisivel' */}
-                <Modal isOpen={modalVisivel !== 'nenhum'} onClose={fecharModal}>
-                    {/* Formulário de Atualização */}
+                <Modal isOpen={modalVisivel !== 'nenhum'} onClose={fecharModal}>                
                     {modalVisivel === 'atualizar' && (
                         <div className="flex flex-col gap-4 p-4 w-full max-w-md">
                             <h2 className="text-xl font-bold">Atualizar Cliente</h2>
@@ -136,7 +119,7 @@ const Clientes: React.FC<Props> = ({ tema, clientes, setClientes, seletorView })
                         </div>
                     )}
 
-                    {/* Formulário de Exclusão */}
+                  
                     {modalVisivel === 'excluir' && (
                          <div className="flex flex-col gap-4 p-4">
                             <h2 className="text-xl font-bold">Excluir Cliente</h2>
@@ -152,7 +135,7 @@ const Clientes: React.FC<Props> = ({ tema, clientes, setClientes, seletorView })
                         </div>
                     )}
 
-                    {/* Tabela de Listagem */}
+                    
                     {modalVisivel === 'listar' && (
                         <div className="flex flex-col gap-4 p-4 bg-white rounded-lg shadow-xl max-w-4xl w-full">
                             <h2 className="text-2xl font-bold text-center text-gray-800">Lista de Clientes</h2>

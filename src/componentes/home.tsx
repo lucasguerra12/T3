@@ -3,7 +3,6 @@ import { UsersIcon, ShoppingBagIcon, ScissorsIcon, ListBulletIcon } from '@heroi
 
 type Props = {
     tema: string
-    // A correção está aqui, na tipagem do evento:
     seletorView: (novaTela: string, evento: React.MouseEvent<HTMLButtonElement>) => void
 }
 
