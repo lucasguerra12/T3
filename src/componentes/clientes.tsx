@@ -1,44 +1,86 @@
-import { ArrowLeftIcon, ListBulletIcon, UserCircleIcon, UserMinusIcon } from "@heroicons/react/24/solid"
-import React, { useState } from "react"
+import React, { useState } from "react";
+import { ArrowLeftIcon, ListBulletIcon, TrashIcon, UserCircleIcon } from "@heroicons/react/24/solid"
 import Modal from "./Modal"
+import { Cliente } from "./roteador";
 
 type Props = {
     tema: string
-    seletorView: (novaTela: string, evento: React.MouseEvent) => void
+    clientes: Cliente[]
+    setClientes: (clientes: Cliente[]) => void
+    seletorView: (novaTela: string, evento: React.MouseEvent<HTMLButtonElement>) => void
 }
 
-const Clientes: React.FC<Props> = ({ tema, seletorView }) => {
-    const [mostrarListagens, setMostrarListagens] = useState(false);
-    const [atualizarCliente, setAtualizarCliente] = useState(false);
-    const [modalAberto, setModalAberto] = useState(false);
-    const [modalConteudo, setModalConteudo] = useState<React.ReactNode>(null);
+const Clientes: React.FC<Props> = ({ tema, clientes, setClientes, seletorView }) => {
+    // Estado para controlar qual modal está visível ('nenhum', 'atualizar', etc.)
+    const [modalVisivel, setModalVisivel] = useState<'nenhum' | 'atualizar' | 'excluir' | 'listar'>('nenhum');
+    
+    // Estados para os campos do formulário de atualização
+    const [nomeAtualizacao, setNomeAtualizacao] = useState('');
+    const [novoEmail, setNovoEmail] = useState('');
+    const [novoTelefone, setNovoTelefone] = useState('');
+    
+    // Estado para o campo do formulário de exclusão
+    const [nomeExclusao, setNomeExclusao] = useState('');
 
-    const abrirModal = (conteudo: React.ReactNode) => {
-        setModalAberto(true);
-        setModalConteudo(conteudo);
-    };
-
+    // Função para fechar qualquer modal e limpar os estados dos formulários
     const fecharModal = () => {
-        setModalAberto(false);
-        setModalConteudo(null);
+        setModalVisivel('nenhum');
+        setNomeAtualizacao('');
+        setNovoEmail('');
+        setNovoTelefone('');
+        setNomeExclusao('');
     };
 
-    const handleListagensClick = () => {
-        setMostrarListagens((prev) => !prev);
-        setAtualizarCliente(false);
-    };
+    // Função para lidar com a atualização de um cliente
+    const handleAtualizarCliente = () => {
+        // Busca o cliente pelo nome (ignorando maiúsculas/minúsculas)
+        const clienteExiste = clientes.find(c => c.nome.toLowerCase() === nomeAtualizacao.toLowerCase());
+        if (!clienteExiste) {
+            alert('Cliente com o nome informado não encontrado.');
+            return;
+        }
 
-    const handleAtualizarClienteClick = () => {
-        setAtualizarCliente((prev) => !prev);
-        setMostrarListagens(false);
+        // Cria uma nova lista com os dados do cliente atualizados
+        const clientesAtualizados = clientes.map(c => {
+            if (c.nome.toLowerCase() === nomeAtualizacao.toLowerCase()) {
+                // Mantém os dados antigos se os novos campos estiverem vazios
+                return { 
+                    ...c, 
+                    email: novoEmail || c.email,
+                    telefone: novoTelefone || c.telefone
+                };
+            }
+            return c;
+        });
+        setClientes(clientesAtualizados);
+        alert('Cliente atualizado com sucesso!');
+        fecharModal();
     };
+    
+    // Função para lidar com a exclusão de um cliente
+    const handleExcluirCliente = () => {
+        // Busca o cliente pelo nome (ignorando maiúsculas/minúsculas)
+        const clienteExiste = clientes.find(c => c.nome.toLowerCase() === nomeExclusao.toLowerCase());
+        if (!clienteExiste) {
+            alert('Cliente com o nome informado não encontrado.');
+            return;
+        }
+
+        // Cria uma nova lista sem o cliente excluído
+        const clientesFiltrados = clientes.filter(c => c.nome.toLowerCase() !== nomeExclusao.toLowerCase());
+        setClientes(clientesFiltrados);
+        alert('Cliente excluído com sucesso!');
+        fecharModal();
+    };
+    
+    // Estilos reutilizáveis para os formulários
+    const inputStyle = "appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-blue-500";
+    const labelStyle = "block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2";
 
     return (
         <>
-            
             <div className="bg-sky-100 min-h-screen">
                 <div className="flex w-full p-4">
-                    
                     <button
                         className="flex p-3 items-center text-xl font-semibold text-gray-700 hover:bg-sky-300 transition rounded-xl bg-sky-200 shadow"
                         onClick={(e) => seletorView('Home', e)}
@@ -48,81 +90,99 @@ const Clientes: React.FC<Props> = ({ tema, seletorView }) => {
                     </button>
                 </div>
 
-               
-                <div className="flex flex-wrap p-4 gap-5 justify-center">
-                    <button
-                        className="flex flex-col justify-center items-center px-4 py-2 rounded-lg h-52 w-full max-w-xs text-white font-semibold hover:bg-blue-700 transition bg-blue-500 shadow-md"
-                        onClick={handleAtualizarClienteClick}
-                    >
-                        <UserCircleIcon className="h-16 w-16 mb-4" />
-                        Atualizar 
-                    </button>
-                    <button
-                        className="flex flex-col justify-center items-center px-4 py-2 rounded-lg h-52 w-full max-w-xs text-white font-semibold hover:bg-blue-700 transition bg-blue-500 shadow-md"
-                        onClick={() =>
-                            abrirModal(
-                                <div className="flex flex-col gap-4">
-                                    <h2 className="text-xl font-bold">Informe o CPF do cliente a ser excluído:</h2>
-                                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                                        <input
-                                            className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
-                                            id="cpf_excluir"
-                                            type="text"
-                                            placeholder="000.000.000-00"
-                                        />
-                                    </label>
-                                    <div className="flex justify-end gap-3">
-                                        <button
-                                            onClick={fecharModal}
-                                            className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition"
-                                        >
-                                            Cancelar
-                                        </button>
-                                        <button
-                                            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
-                                        >
-                                            Confirmar
-                                        </button>
-                                    </div>
-                                </div>
-                            )
-                        }
-                    >
-                        <UserMinusIcon className="h-16 w-16 mb-4" />
-                        Excluir 
-                    </button>
-                    <button
-                        className="flex flex-col justify-center items-center px-4 py-2 rounded-lg h-52 w-full max-w-xs text-white font-semibold hover:bg-blue-700 transition bg-blue-500 shadow-md"
-                        onClick={handleListagensClick}
-                    >
-                        <ListBulletIcon className="h-16 w-16 mb-4" />
-                        Listagens
-                    </button>
+                <div className="w-full flex justify-center p-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full max-w-6xl">
+                        <button
+                            className="flex flex-col justify-center items-center px-4 py-2 rounded-lg h-52 w-full text-white font-semibold hover:bg-blue-700 transition bg-blue-500 shadow-md"
+                            onClick={() => setModalVisivel('atualizar')}
+                        >
+                            <UserCircleIcon className="h-16 w-16 mb-4" />
+                            Atualizar Cliente
+                        </button>
+                        <button
+                            className="flex flex-col justify-center items-center px-4 py-2 rounded-lg h-52 w-full text-white font-semibold hover:bg-blue-700 transition bg-blue-500 shadow-md"
+                            onClick={() => setModalVisivel('excluir')}
+                        >
+                            <TrashIcon className="h-16 w-16 mb-4" />
+                            Excluir Cliente
+                        </button>
+                        <button 
+                            className="flex flex-col justify-center items-center px-4 py-2 rounded-lg h-52 w-full text-white font-semibold hover:bg-blue-700 transition bg-blue-500 shadow-md"
+                            onClick={() => setModalVisivel('listar')}>
+                            <ListBulletIcon className="h-16 w-16 mb-4" />
+                            Listagem
+                        </button>
+                    </div>
                 </div>
 
-                
-                {atualizarCliente && (
-                    <div className="flex flex-wrap p-4 gap-4 justify-center">
-                        <button className="flex justify-center items-center text-white px-4 py-2 rounded-lg h-12 w-full max-w-xs hover:bg-sky-600 transition bg-sky-500 shadow">Atualizar Nome</button>
-                        <button className="flex justify-center items-center text-white px-4 py-2 rounded-lg h-12 w-full max-w-xs hover:bg-sky-600 transition bg-sky-500 shadow">Atualizar CPF</button>
-                        <button className="flex justify-center items-center text-white px-4 py-2 rounded-lg h-12 w-full max-w-xs hover:bg-sky-600 transition bg-sky-500 shadow">Atualizar RGs</button>
-                        <button className="flex justify-center items-center text-white px-4 py-2 rounded-lg h-12 w-full max-w-xs hover:bg-sky-600 transition bg-sky-500 shadow">Atualizar Telefones</button>
-                    </div>
-                )}
+                {/* O Modal único que renderiza o conteúdo certo com base no estado 'modalVisivel' */}
+                <Modal isOpen={modalVisivel !== 'nenhum'} onClose={fecharModal}>
+                    {/* Formulário de Atualização */}
+                    {modalVisivel === 'atualizar' && (
+                        <div className="flex flex-col gap-4 p-4 w-full max-w-md">
+                            <h2 className="text-xl font-bold">Atualizar Cliente</h2>
+                            
+                            <label className={labelStyle} htmlFor="cliente_nome_att">Nome do Cliente</label>
+                            <input id="cliente_nome_att" className={inputStyle} type="text" placeholder="Digite o nome completo do cliente" value={nomeAtualizacao} onChange={e => setNomeAtualizacao(e.target.value)} />
 
-                
-                {mostrarListagens && (
-                    <div className="flex flex-wrap p-4 gap-4 justify-center">
-                        <button className="flex justify-center items-center text-white px-4 py-2 rounded-lg h-12 w-full max-w-xs hover:bg-sky-600 transition bg-sky-500 shadow">Listagem Geral</button>
-                        <button className="flex justify-center items-center text-white px-4 py-2 rounded-lg h-12 w-full max-w-xs hover:bg-sky-600 transition bg-sky-500 shadow">Listagem por Gênero</button>
-                        <button className="flex justify-center items-center text-white px-4 py-2 rounded-lg h-12 w-full max-w-xs hover:bg-sky-600 transition bg-sky-500 shadow">Maiores Consumidores</button>
-                        <button className="flex justify-center items-center text-white px-4 py-2 rounded-lg h-12 w-full max-w-xs hover:bg-sky-600 transition bg-sky-500 shadow">Menores Consumidores</button>
-                        <button className="flex justify-center items-center text-white px-4 py-2 rounded-lg h-12 w-full max-w-xs hover:bg-sky-600 transition bg-sky-500 shadow">Top 5 (Valor)</button>
-                    </div>
-                )}
-                
-                <Modal isOpen={modalAberto} onClose={fecharModal}>
-                    {modalConteudo}
+                            <label className={labelStyle} htmlFor="cliente_email_att">Novo E-mail</label>
+                            <input id="cliente_email_att" className={inputStyle} type="email" placeholder="Deixe em branco para não alterar" value={novoEmail} onChange={e => setNovoEmail(e.target.value)} />
+                            <label className={labelStyle} htmlFor="cliente_tel_att">Novo Telefone</label>
+                            <input id="cliente_tel_att" className={inputStyle} type="text" placeholder="Deixe em branco para não alterar" value={novoTelefone} onChange={e => setNovoTelefone(e.target.value)} />
+                            <div className="flex justify-end gap-3 mt-4">
+                                <button onClick={fecharModal} className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition">Cancelar</button>
+                                <button onClick={handleAtualizarCliente} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">Confirmar</button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Formulário de Exclusão */}
+                    {modalVisivel === 'excluir' && (
+                         <div className="flex flex-col gap-4 p-4">
+                            <h2 className="text-xl font-bold">Excluir Cliente</h2>
+                            
+                            <label className={labelStyle} htmlFor="cliente_nome_del">Nome do Cliente</label>
+                            <input id="cliente_nome_del" className={inputStyle} type="text" placeholder="Digite o nome completo do cliente" value={nomeExclusao} onChange={e => setNomeExclusao(e.target.value)} />
+                            
+                            <p className="text-red-500 text-sm mt-2">Atenção: Esta ação é irreversível.</p>
+                            <div className="flex justify-end gap-3 mt-4">
+                                <button onClick={fecharModal} className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition">Cancelar</button>
+                                <button onClick={handleExcluirCliente} className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition">Confirmar Exclusão</button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Tabela de Listagem */}
+                    {modalVisivel === 'listar' && (
+                        <div className="flex flex-col gap-4 p-4 bg-white rounded-lg shadow-xl max-w-4xl w-full">
+                            <h2 className="text-2xl font-bold text-center text-gray-800">Lista de Clientes</h2>
+                            <div className="overflow-x-auto">
+                                <table className="min-w-full bg-white">
+                                    <thead className="bg-blue-500 text-white">
+                                        <tr>
+                                            <th className="py-2 px-4 text-left">Nome</th>
+                                            <th className="py-2 px-4 text-left">CPF</th>
+                                            <th className="py-2 px-4 text-left">E-mail</th>
+                                            <th className="py-2 px-4 text-left">Telefone</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {clientes.map((cliente, index) => (
+                                            <tr key={index} className="border-b hover:bg-gray-100">
+                                                <td className="py-2 px-4">{cliente.nome}</td>
+                                                <td className="py-2 px-4">{cliente.cpf}</td>
+                                                <td className="py-2 px-4">{cliente.email}</td>
+                                                <td className="py-2 px-4">{cliente.telefone}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div className="flex justify-end mt-4">
+                                <button onClick={fecharModal} className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition">Fechar</button>
+                            </div>
+                        </div>
+                    )}
                 </Modal>
             </div>
         </>

@@ -3,7 +3,8 @@ import React from "react";
 type Props = {
     tema: string,
     botoes: string[],
-    seletorView: (novaTela: string, evento: React.MouseEvent) => void
+   
+    seletorView: (novaTela: string, evento: React.MouseEvent<HTMLButtonElement>) => void
 }
 
 const BarraNavegacao: React.FC<Props> = ({ tema, botoes, seletorView }) => {
@@ -12,7 +13,7 @@ const BarraNavegacao: React.FC<Props> = ({ tema, botoes, seletorView }) => {
         return botoes.map(valor =>
             <li key={valor}>
                 <button
-                    className="px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
+                    className="px-4 py-2 rounded-lg font-semibold hover:bg-black transition"
                     onClick={(e) => seletorView(valor, e)}
                 >
                     {valor}

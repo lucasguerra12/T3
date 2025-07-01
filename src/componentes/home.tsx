@@ -3,7 +3,8 @@ import { UsersIcon, ShoppingBagIcon, ScissorsIcon, ListBulletIcon } from '@heroi
 
 type Props = {
     tema: string
-    seletorView: (novaTela: string, evento: React.MouseEvent) => void
+    // A correção está aqui, na tipagem do evento:
+    seletorView: (novaTela: string, evento: React.MouseEvent<HTMLButtonElement>) => void
 }
 
 const PaginaPrincipal: React.FC<Props> = ({ tema, seletorView }) => (
@@ -11,8 +12,8 @@ const PaginaPrincipal: React.FC<Props> = ({ tema, seletorView }) => (
         <h5 className="text-center text-lg md:text-2xl lg:text-3xl font-semibold p-4 md:p-6 pt-8 md:pt-12 bg-gradient-to-r from-cyan-500 to-blue-500 text-white">
             Bem-vindo ao sistema do <span className="ml-2 font-bold italic">Grupo World Beauty</span>
         </h5>
-        <div className="flex justify-center bg-sky-100 p-4">
-            <div className="flex flex-col items-center gap-5 w-full">
+        <div className="flex justify-center bg-sky-100 p-4 min-h-screen">
+            <div className="flex flex-col items-center gap-5 w-full py-4">
                 <button
                     className="flex flex-col justify-center items-center px-4 py-2 rounded h-40 w-full max-w-xs text-white font-semibold hover:bg-blue-700 transition bg-blue-500 shadow-md"
                     onClick={(e) => seletorView('Clientes', e)}
@@ -29,7 +30,7 @@ const PaginaPrincipal: React.FC<Props> = ({ tema, seletorView }) => (
                 </button>
                 <button
                     className="flex flex-col justify-center items-center px-4 py-2 rounded h-40 w-full max-w-xs text-white font-semibold hover:bg-blue-700 transition bg-blue-500 shadow-md"
-                    onClick={(e) => seletorView('Servicos', e)}
+                    onClick={(e) => seletorView('Serviços', e)}
                 >
                     <ScissorsIcon className="h-16 w-16 mb-4" />
                     Serviços
