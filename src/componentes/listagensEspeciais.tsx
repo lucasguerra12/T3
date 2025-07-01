@@ -18,6 +18,7 @@ const ListagensEspeciais: React.FC<Props> = ({ tema, seletorView, clientes, prod
     const [modalVisivel, setModalVisivel] = useState<string | null>(null);
     const [filtroNome, setFiltroNome] = useState('');
     const [filtroGenero, setFiltroGenero] = useState<'Todos' | 'Feminino' | 'Masculino'>('Todos');
+
     const clientesFiltradosPorNome = useMemo(() => 
         clientes.filter(c => c.nome.toLowerCase().includes(filtroNome.toLowerCase())),
         [clientes, filtroNome]
@@ -40,13 +41,15 @@ const ListagensEspeciais: React.FC<Props> = ({ tema, seletorView, clientes, prod
     const top10MenosConsumiram = [...clientesPorQuantidade].reverse().slice(0, 10);
 
     const clientesPorValor = useMemo((): ClienteConsumoValor[] => {
+        // MUDANÇA: O mapa de preços agora usa o NOME como chave
         const mapaPrecos = new Map<string, number>();
-        produtos.forEach(p => mapaPrecos.set(p.codigo, parseFloat(p.valor)));
-        servicos.forEach(s => mapaPrecos.set(s.codigo, parseFloat(s.valor)));
+        produtos.forEach(p => mapaPrecos.set(p.nome, parseFloat(p.valor)));
+        servicos.forEach(s => mapaPrecos.set(s.nome, parseFloat(s.valor)));
 
         return clientes.map(cliente => {
-            const gastoProdutos = cliente.produtosConsumidos.reduce((total, cod) => total + (mapaPrecos.get(cod) || 0), 0);
-            const gastoServicos = cliente.servicosConsumidos.reduce((total, cod) => total + (mapaPrecos.get(cod) || 0), 0);
+            // A lógica de cálculo funciona, pois agora busca o preço pelo nome
+            const gastoProdutos = cliente.produtosConsumidos.reduce((total, nomeProduto) => total + (mapaPrecos.get(nomeProduto) || 0), 0);
+            const gastoServicos = cliente.servicosConsumidos.reduce((total, nomeServico) => total + (mapaPrecos.get(nomeServico) || 0), 0);
             return {
                 ...cliente,
                 totalGasto: gastoProdutos + gastoServicos
@@ -79,7 +82,6 @@ const ListagensEspeciais: React.FC<Props> = ({ tema, seletorView, clientes, prod
                 </div>
                 <div className="w-full flex justify-center p-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full max-w-6xl">
-                        
                         <button onClick={() => setModalVisivel('filtroNome')} className="p-4 rounded-lg text-white font-semibold hover:bg-blue-700 transition bg-blue-500 shadow-md">Listar Clientes por Nome</button>
                         <button onClick={() => setModalVisivel('filtroGenero')} className="p-4 rounded-lg text-white font-semibold hover:bg-blue-700 transition bg-blue-500 shadow-md">Listar Clientes por Gênero</button>
                         <button onClick={() => setModalVisivel('top10Mais')} className="p-4 rounded-lg text-white font-semibold hover:bg-blue-700 transition bg-blue-500 shadow-md">Top 10 Consumidores (Qtd)</button>

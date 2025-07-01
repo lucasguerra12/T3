@@ -13,7 +13,6 @@ type Props = {
     setServicos: (servicos: Servico[]) => void,
 }
 
-
 function CadastroClienteModal({ onClose, clientes, setClientes }: { onClose: () => void, clientes: Cliente[], setClientes: (clientes: Cliente[]) => void }) {
     const [nome, setNome] = useState('');
     const [cpf, setCpf] = useState('');
@@ -82,7 +81,8 @@ function CadastroProdutoModal({ onClose, produtos, setProdutos }: { onClose: () 
     
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const novoProduto: Produto = { codigo: `P${produtos.length + 1}`, nome, valor };
+        // MUDANÇA: Objeto criado sem o campo 'codigo'
+        const novoProduto: Produto = { nome, valor };
         setProdutos([...produtos, novoProduto]);
         alert('Produto cadastrado com sucesso!');
         onClose();
@@ -118,7 +118,8 @@ function CadastroServicoModal({ onClose, servicos, setServicos }: { onClose: () 
     
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const novoServico: Servico = { codigo: `S${servicos.length + 1}`, nome, valor };
+        // MUDANÇA: Objeto criado sem o campo 'codigo'
+        const novoServico: Servico = { nome, valor };
         setServicos([...servicos, novoServico]);
         alert('Serviço cadastrado com sucesso!');
         onClose();
@@ -148,9 +149,7 @@ function CadastroServicoModal({ onClose, servicos, setServicos }: { onClose: () 
     )
 }
 
-
 const FormularioCadastro: React.FC<Props> = ({ tema, clientes, produtos, servicos, setClientes, setProdutos, setServicos }) => {
-    
     const [modalVisivel, setModalVisivel] = useState<'nenhum' | 'cliente' | 'produto' | 'servico'>('nenhum');
 
     const fecharModal = () => {
@@ -159,7 +158,7 @@ const FormularioCadastro: React.FC<Props> = ({ tema, clientes, produtos, servico
     
     return (
         <>
-            <div className="w-full flex justify-center bg-sky-100 min-h-screen p-4">
+            <div className="w-full flex justify-center bg-sky-100 min-h-screen p-4 pt-12">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full max-w-6xl">
                     <button className="flex flex-col justify-center items-center px-4 py-2 rounded-lg h-52 w-full text-white font-semibold hover:bg-blue-700 transition bg-blue-500 shadow-md" onClick={() => setModalVisivel('cliente')}>
                         <UserCircleIcon className="h-16 w-16 mb-4" />
@@ -175,6 +174,7 @@ const FormularioCadastro: React.FC<Props> = ({ tema, clientes, produtos, servico
                     </button>
                 </div>
             </div>
+            
             <Modal isOpen={modalVisivel !== 'nenhum'} onClose={fecharModal}>
                 {modalVisivel === 'cliente' && <CadastroClienteModal onClose={fecharModal} clientes={clientes} setClientes={setClientes} />}
                 {modalVisivel === 'produto' && <CadastroProdutoModal onClose={fecharModal} produtos={produtos} setProdutos={setProdutos} />}
